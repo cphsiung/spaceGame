@@ -13,27 +13,36 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Game")
 clock = pygame.time.Clock()
 
+# Construct Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((50, 40))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
-        self.rect.x = 200
-        self.rect.y = 200
+        self.rect.centerx = WIDTH / 2
+        self.rect.bottom = HEIGHT - 10
+        self.speedx = 8
 
+    # Define actions when keys are pressed
     def update(self):
-        self.rect.x += 2
-        if self.rect.left > WIDTH:
-            self.rect.right = 0
+        key_pressed = pygame.key.get_pressed()
+        if key_pressed[pygame.K_d]:
+            self.rect.x += self.speedx
+        if key_pressed[pygame.K_a]:
+            self.rect.x -= self.speedx
+        
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
 
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 
 running = True
-while running:
-    
+while running:  
     clock.tick(FPS) # Max update FPS times in one sec
     # Get user input
     # Quit game when user click close
