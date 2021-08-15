@@ -27,6 +27,18 @@ rock_imgs = []
 for i in range(7):
     rock_imgs.append(pygame.image.load(os.path.join("img", f"rock{i}.png")).convert())
 
+# Load font
+font_name = pygame.font.match_font('arial')
+
+# Render text
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.centerx = x
+    text_rect.top = y
+    surf.blit(text_surface, text_rect)
+
 
 #Construct Player
 class Player(pygame.sprite.Sprite):
@@ -66,7 +78,7 @@ class Rock(pygame.sprite.Sprite):
         self.image = self.image_original.copy() # Store rotated image
         self.image_original.set_colorkey(BLACK) # Remove black background from the image
         self.rect = self.image.get_rect()
-        self.radius = self.rect.width * 0.85 / 2 # Radius for collision judgement
+        self.radius = int (self.rect.width * 0.85 / 2) # Radius for collision judgement
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(-180, -100)
         self.speedy = random.randrange(2, 10)
@@ -123,6 +135,8 @@ for i in range(8):
     all_sprites.add(rock)
     rocks.add(rock)
 
+score = 0
+
 running = True
 while running:  
     clock.tick(FPS) # Max update FPS times in one sec
@@ -140,6 +154,7 @@ while running:
     # Check if rocks and bullets collide, delete from group when collide
     hits = pygame.sprite.groupcollide(rocks, bullets, True, True)
     for hit in hits:
+        score += hit.radius
         rock = Rock()
         all_sprites.add(rock)
         rocks.add(rock)
@@ -153,6 +168,7 @@ while running:
     screen.fill(BLACK)
     screen.blit(background_img, (0, 0))
     all_sprites.draw(screen)
+    draw_text(screen, str(score), 18, WIDTH / 2, 10)
     pygame.display.update()
 
 pygame.quit()
