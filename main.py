@@ -25,13 +25,14 @@ rock_img = pygame.image.load(os.path.join("img", "rock.png")).convert()
 bullet_img = pygame.image.load(os.path.join("img", "bullet.png")).convert()
 
 
-# Construct Player
+#Construct Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.transform.scale(player_img, (50, 38))
-        self.image.set_colorkey(BLACK) # Remove black background from the image
+        self.image.set_colorkey(BLACK) #Remove black background from the image
         self.rect = self.image.get_rect()
+        self.radius = 20 #Radius for collision judgement
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 8
@@ -59,8 +60,9 @@ class Rock(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = rock_img
-        self.image.set_colorkey(BLACK) # Remove black background from the image
+        self.image.set_colorkey(BLACK) #Remove black background from the image
         self.rect = self.image.get_rect()
+        self.radius = self.rect.width * 0.85 / 2 #Radius for collision judgement
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(2, 10)
@@ -127,7 +129,7 @@ while running:
         rocks.add(rock)
 
     # Check if player and rocks collide, end game when collide
-    damage = pygame.sprite.spritecollide(player, rocks, False)
+    damage = pygame.sprite.spritecollide(player, rocks, False, pygame.sprite.collide_circle)
     if damage:
         running = False
 
