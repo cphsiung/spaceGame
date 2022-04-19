@@ -28,7 +28,7 @@ for i in range(7):
     rock_imgs.append(pygame.image.load(os.path.join("img", f"rock{i}.png")).convert())
 
 # Load font
-font_name = pygame.font.match_font('arial')
+font_name = pygame.font.match_font("arial")
 
 # Render text
 def draw_text(surf, text, size, x, y):
@@ -40,14 +40,14 @@ def draw_text(surf, text, size, x, y):
     surf.blit(text_surface, text_rect)
 
 
-#Construct Player
+# Construct Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.transform.scale(player_img, (50, 38))
-        self.image.set_colorkey(BLACK) #Remove black background from the image
+        self.image.set_colorkey(BLACK)  # Remove black background from the image
         self.rect = self.image.get_rect()
-        self.radius = 20 #Radius for collision judgement
+        self.radius = 20  # Radius for collision judgement
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 8
@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.x += self.speedx
         if key_pressed[pygame.K_a]:
             self.rect.x -= self.speedx
-        
+
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
@@ -70,21 +70,24 @@ class Player(pygame.sprite.Sprite):
         all_sprites.add(bullet)
         bullets.add(bullet)
 
+
 # Construct Rock
 class Rock(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image_original = random.choice(rock_imgs) # Store original image
-        self.image = self.image_original.copy() # Store rotated image
-        self.image_original.set_colorkey(BLACK) # Remove black background from the image
+        self.image_original = random.choice(rock_imgs)  # Store original image
+        self.image = self.image_original.copy()  # Store rotated image
+        self.image_original.set_colorkey(
+            BLACK
+        )  # Remove black background from the image
         self.rect = self.image.get_rect()
-        self.radius = int (self.rect.width * 0.85 / 2) # Radius for collision judgement
+        self.radius = int(self.rect.width * 0.85 / 2)  # Radius for collision judgement
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(-180, -100)
         self.speedy = random.randrange(2, 10)
         self.speedx = random.randrange(-3, 3)
         self.total_degree = 0
-        self.rotate_degree = random.randrange(-3, 3) # Degree to rotate image
+        self.rotate_degree = random.randrange(-3, 3)  # Degree to rotate image
 
     # Function to rotate rocks
     def rotate(self):
@@ -93,7 +96,7 @@ class Rock(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image_original, self.total_degree)
         center = self.rect.center
         self.rect = self.image.get_rect()
-        self.rect.center = center # Keep updating center when rotating
+        self.rect.center = center  # Keep updating center when rotating
 
     # Define actions when keys are pressed
     def update(self):
@@ -108,11 +111,12 @@ class Rock(pygame.sprite.Sprite):
             self.speedy = random.randrange(2, 10)
             self.speedx = random.randrange(-3, 3)
 
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = bullet_img
-        self.image.set_colorkey(BLACK) # Remove black background from the image
+        self.image.set_colorkey(BLACK)  # Remove black background from the image
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
@@ -124,6 +128,7 @@ class Bullet(pygame.sprite.Sprite):
         # Remove bullet when it's outside of game window
         if self.rect.bottom < 0:
             self.kill()
+
 
 all_sprites = pygame.sprite.Group()
 rocks = pygame.sprite.Group()
@@ -138,8 +143,8 @@ for i in range(8):
 score = 0
 
 running = True
-while running:  
-    clock.tick(FPS) # Max update FPS times in one sec
+while running:
+    clock.tick(FPS)  # Max update FPS times in one sec
     # Get user input
     # Quit game when user click close
     for event in pygame.event.get():
@@ -160,7 +165,9 @@ while running:
         rocks.add(rock)
 
     # Check if player and rocks collide, end game when collide
-    damage = pygame.sprite.spritecollide(player, rocks, False, pygame.sprite.collide_circle)
+    damage = pygame.sprite.spritecollide(
+        player, rocks, False, pygame.sprite.collide_circle
+    )
     if damage:
         running = False
 
